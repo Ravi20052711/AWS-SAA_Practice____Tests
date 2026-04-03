@@ -67,16 +67,16 @@ export default function Dashboard() {
       <div className="grid grid-4 gap-4 mb-8">
         {[
           {
-            label: 'Questions Answered', value: `${totalAnswered}`, sub: `of ${questions.length}`,
+            label: 'Total Questions', value: `${questions.length}`, sub: 'available',
+            icon: '📚', grad: 'linear-gradient(135deg, var(--accent-purple), #c084fc)'
+          },
+          {
+            label: 'Answered', value: `${totalAnswered}`, sub: `of ${questions.length}`,
             icon: '📝', grad: 'linear-gradient(135deg, var(--aws-orange), #FFB347)'
           },
           {
-            label: 'Accuracy', value: `${accuracy}%`, sub: `${correct} correct`,
-            icon: '🎯', grad: 'linear-gradient(135deg, var(--accent-green), #6ee7b7)'
-          },
-          {
-            label: 'Bookmarked', value: `${bookmarks.length}`, sub: 'for review',
-            icon: '🔖', grad: 'linear-gradient(135deg, var(--accent-blue), #7dd3fc)'
+            label: 'Current Accuracy', value: `${accuracy}%`, sub: `${correct} correct`,
+            icon: '🎯', grad: accuracy >= 72 ? 'linear-gradient(135deg, var(--accent-green), #6ee7b7)' : 'linear-gradient(135deg, var(--accent-red), #fca5a5)'
           },
           {
             label: 'Study Streak', value: `${streak.current}`, sub: `days (best: ${streak.longest})`,

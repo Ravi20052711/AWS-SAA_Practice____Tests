@@ -61,6 +61,18 @@ export default function PracticeMode() {
     setSearchParams(next ? { topic: next } : {});
   }, [selectedTopic]);
 
+  const answeredInList = useMemo(() => {
+    return questionList.filter(q => answeredQuestions[q.id]);
+  }, [questionList, answeredQuestions]);
+
+  const correctInList = useMemo(() => {
+    return answeredInList.filter(q => answeredQuestions[q.id].isCorrect).length;
+  }, [answeredInList, answeredQuestions]);
+
+  const accuracy = answeredInList.length > 0 
+    ? Math.round((correctInList / answeredInList.length) * 100) 
+    : 0;
+
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
       <p style={{ color: 'var(--text-secondary)' }}>⏳ Loading questions…</p>
@@ -103,18 +115,36 @@ export default function PracticeMode() {
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="card" style={{ padding: '1rem 1.25rem', marginBottom: '1.25rem' }}>
-        <div className="flex items-center justify-between mb-2">
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-            Question {currentIdx + 1} of {questionList.length}
-            {selectedTopic && <span className="badge badge-orange ml-2" style={{ marginLeft: '0.5rem' }}>{selectedTopic}</span>}
-          </span>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            {answered} answered overall
-          </span>
+      {/* Progress & Accuracy */}
+      <div className="grid grid-2 gap-4 mb-5">
+        <div className="card" style={{ padding: '1rem 1.25rem' }}>
+          <div className="flex items-center justify-between mb-2">
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+              Progress
+            </span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              {currentIdx + 1} of {questionList.length}
+            </span>
+          </div>
+          <ProgressBar value={currentIdx + 1} max={questionList.length} showPercent={false} />
         </div>
-        <ProgressBar value={currentIdx + 1} max={questionList.length} showPercent={false} />
+
+        <div className="card" style={{ padding: '1rem 1.25rem' }}>
+          <div className="flex items-center justify-between mb-2">
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+              Accuracy
+            </span>
+            <span style={{ fontSize: '0.8rem', color: accuracy >= 72 ? 'var(--accent-green)' : 'var(--accent-red)', fontWeight: 700 }}>
+              {accuracy}%
+            </span>
+          </div>
+          <ProgressBar 
+            value={correctInList} 
+            max={Math.max(answeredInList.length, 1)} 
+            color={accuracy >= 72 ? 'var(--accent-green)' : 'var(--accent-red)'}
+            showPercent={false}
+          />
+        </div>
       </div>
 
       {/* Topic Filters */}
