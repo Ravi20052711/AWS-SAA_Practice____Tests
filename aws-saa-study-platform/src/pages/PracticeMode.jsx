@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Shuffle, Filter, X, SkipForward } from 'lucide-react';
+import { Shuffle, Filter, X, SkipForward, RotateCcw } from 'lucide-react';
 import { useQuiz } from '../context/QuizContext';
 import QuestionCard from '../components/QuestionCard';
 import ProgressBar from '../components/ProgressBar';
@@ -22,7 +22,7 @@ function shuffleArray(arr) {
 }
 
 export default function PracticeMode() {
-  const { questions, answeredQuestions, loading } = useQuiz();
+  const { questions, answeredQuestions, resetQuiz, loading } = useQuiz();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -44,7 +44,7 @@ export default function PracticeMode() {
     }
     setQuestionList(shuffled ? shuffleArray(filtered) : filtered);
     setCurrentIdx(0);
-  }, [questions, selectedTopic, shuffled, showUnanswered]);
+  }, [questions, selectedTopic, shuffled, showUnanswered, answeredQuestions]);
 
   // Sync topic from URL
   useEffect(() => {
@@ -111,6 +111,13 @@ export default function PracticeMode() {
             onClick={() => setShuffled(v => !v)}
           >
             <Shuffle size={14} /> {shuffled ? 'Shuffled' : 'Shuffle'}
+          </button>
+          <button
+            className="btn btn-sm btn-ghost"
+            onClick={() => { if (confirm('Reset all progress and bookmarks?')) resetQuiz(); }}
+            style={{ color: 'var(--text-muted)' }}
+          >
+            <RotateCcw size={14} /> Reset
           </button>
         </div>
       </div>

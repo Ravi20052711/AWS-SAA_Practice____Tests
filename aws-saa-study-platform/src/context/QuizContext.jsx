@@ -117,6 +117,7 @@ export function QuizProvider({ children }) {
     setState(prev => ({
       ...prev,
       answeredQuestions: {},
+      bookmarks: [],
       sessionStats: { correct: 0, wrong: 0, skipped: 0 },
     }));
   }, []);

@@ -33,7 +33,7 @@ export default function QuestionCard({
       setSelected(savedAnswer.selectedIndex);
       setRevealed(true);
     }
-  }, [question.id, examMode]);
+  }, [question.id, examMode, savedAnswer]);
 
   // Exam mode sync
   useEffect(() => {
