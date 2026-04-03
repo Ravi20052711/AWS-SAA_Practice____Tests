@@ -33,7 +33,7 @@ jobs:
           
       - name: Install dependencies
         working-directory: ./aws-saa-study-platform
-        run: npm ci
+        run: npm install
         
       - name: Fetch and parse questions
         working-directory: ./aws-saa-study-platform
