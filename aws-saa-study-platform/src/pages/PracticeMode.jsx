@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Shuffle, Filter, X, SkipForward, RotateCcw } from 'lucide-react';
 import { useQuiz } from '../context/QuizContext';
@@ -31,7 +31,12 @@ export default function PracticeMode() {
   const [showUnanswered, setShowUnanswered] = useState(false);
   const [questionList, setQuestionList] = useState([]);
 
-  // Filter + shuffle logic
+  // Keep a ref so the filter effect can read latest answeredQuestions
+  // without triggering a re-run (and resetting currentIdx) on every answer
+  const answeredQuestionsRef = useRef(answeredQuestions);
+  answeredQuestionsRef.current = answeredQuestions;
+
+  // Filter + shuffle logic — does NOT depend on answeredQuestions directly
   useEffect(() => {
     let filtered = questions;
     if (selectedTopic) {
@@ -40,11 +45,11 @@ export default function PracticeMode() {
       );
     }
     if (showUnanswered) {
-      filtered = filtered.filter(q => !answeredQuestions[q.id]);
+      filtered = filtered.filter(q => !answeredQuestionsRef.current[q.id]);
     }
     setQuestionList(shuffled ? shuffleArray(filtered) : filtered);
     setCurrentIdx(0);
-  }, [questions, selectedTopic, shuffled, showUnanswered, answeredQuestions]);
+  }, [questions, selectedTopic, shuffled, showUnanswered]);
 
   // Sync topic from URL
   useEffect(() => {
